@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{74085c8f-b57b-45f3-b2b2-8fe2c3824647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\d2d1">
+      <UniqueIdentifier>{ea9d85bf-f9c0-4958-8f64-c33b4af84253}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\imv.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\imv.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\d2d1_window.h">
+      <Filter>src\d2d1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\d2d1_assert.h">
+      <Filter>src\d2d1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\d2d1_common.h">
+      <Filter>src\d2d1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math2d.h">
+      <Filter>src\d2d1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utf8.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\singleton.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imv.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="imv.exe.manifest" />
+  </ItemGroup>
+</Project>

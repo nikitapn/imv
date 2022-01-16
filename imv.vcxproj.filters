@@ -53,6 +53,9 @@
     <ClInclude Include="src\imv.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\thread_pool.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="imv.exe.manifest" />

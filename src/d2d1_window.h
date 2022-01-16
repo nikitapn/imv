@@ -59,7 +59,6 @@ private:
 		CreateDeviceResources(this->m_hWnd);
 		CreateDeviceSizeResources(rc.Width(), rc.Height());
 		static_cast<T*>(this)->CreateResources();
-		static_cast<T*>(this)->OnBoundsChanged();
 		static_cast<T*>(this)->OnResourcesCreated();
 
 		return 0;
@@ -161,7 +160,20 @@ private:
 		static_cast<T*>(this)->Draw();
 		m_d2dContext->EndDraw();
 		
+
+		// We are accessing Direct3D resources directly without Direct2D's knowledge, so we
+    // must manually acquire and apply the Direct2D factory lock.
+    ID2D1Multithread* m_D2DMultithread;
+    GR::get_instance().d2dFactory->QueryInterface(IID_PPV_ARGS(&m_D2DMultithread));
+    m_D2DMultithread->Enter();
+    
+    // Now it is safe to make Direct3D/DXGI calls, such as IDXGISwapChain::Present
 		auto const hr = m_swapChain->Present(1, 0);
+
+    // It is absolutely critical that the factory lock be released upon
+    // exiting this function, or else any consequent Direct2D calls will be blocked.
+    m_D2DMultithread->Leave();
+
 		
 		if (S_OK == hr) {
 			// do nothing
@@ -187,7 +199,6 @@ private:
 			CreateDeviceResources(this->m_hWnd);
 			CreateDeviceSizeResources(rc.right - rc.left, rc.bottom - rc.top);
 			static_cast<T*>(this)->CreateResources();
-			static_cast<T*>(this)->OnBoundsChanged();
 		}
 
 		return ok;
@@ -342,6 +353,10 @@ private:
 		m_d2dDevice.Reset();
 		m_d3dContext.Reset();
 		m_d3dDevice.Reset();
+	}
+	
+	ID2D1DeviceContext1* d2d1_context() {
+		return m_d2dContext.Get();
 	}
 
 	D2DWindow() 

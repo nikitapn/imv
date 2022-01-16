@@ -13,6 +13,7 @@ int Run(LPTSTR lpstrCmdLine, int nCmdShow = SW_SHOWDEFAULT) {
 
 	int nRet = -1;
 	try {
+		//std::string str = "d:\\temp\\1\\IMG_2653.CR2";
 		ImvWindow wndMain(str);
 		
 		if (wndMain.Create(NULL, &ImvWindow::rcDefault, str.c_str(), CFrameWinTraits::GetWndStyle(0), CFrameWinTraits::GetWndExStyle(0)) == NULL)
@@ -36,11 +37,11 @@ int Run(LPTSTR lpstrCmdLine, int nCmdShow = SW_SHOWDEFAULT) {
 	return nRet;
 }
 
-int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int nCmdShow)
-{
+int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int nCmdShow) {
 	if (*lpstrCmdLine == '\0') return -1;
 	
-	if (CoInitializeEx(NULL, COINIT_APARTMENTTHREADED) != S_OK) {
+	if (CoInitializeEx(NULL, COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE) != S_OK) {
+		MessageBoxA(NULL, "CoInitializeEx has failed", "", MB_ICONERROR);
 		return -1;
 	}
 
@@ -58,6 +59,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 
+	tp::get_instance().stop();
 	_Module.Term();
 
 	GR::get_instance().Uninitialize();

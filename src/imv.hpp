@@ -7,7 +7,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <future>
+#include <set>
 
 #include <boost/asio/strand.hpp>
 
@@ -540,33 +540,36 @@ public:
 	}
 
 	ImvWindow(const fs::path image_path) {
-		fs::directory_iterator m_dir_iterator;
 		auto directory = image_path;
 		directory.remove_filename();
 
-		m_dir_iterator = fs::directory_iterator(directory);
-
+		std::set<fs::path> files;
+		for (auto& it : fs::directory_iterator(directory)) {
+			if (!it.is_regular_file()) continue;
+			const auto& path = it.path();
+			if (path.has_extension()) {
+				auto ext = path.extension().string();
+				std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
+				if (ext == ".jpg"
+					|| ext == ".bmp"
+					|| ext == ".cr2"
+					|| ext == ".gif"
+					|| ext == ".png"
+					|| ext == ".ico"
+					|| ext == ".webp") {
+					files.emplace(path);
+				}
+			}
+		}
+		
+		images_.reserve(files.size());
+		
 		int64_t img_idx = -1;
 
-		for (auto& it : m_dir_iterator) {
-			if (it.is_regular_file()) {
-				auto path = it.path();
-				if (path.has_extension()) {
-					auto ext = path.extension().string();
-					std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
-
-					bool founded_image_file = true;
-
-					if (ext == ".jpg" || ext == ".bmp" || ext == ".cr2" || ext == ".gif" || ext == ".png" || ext == ".ico" || ext == ".webp") {
-						images_.emplace_back(*this, path.string());
-					} else {
-						founded_image_file = false;
-					}
-
-					if (img_idx == -1 && founded_image_file && image_path == path) {
-						img_idx = images_.size() - 1;
-					}
-				}
+		for (auto& path : files) {
+			images_.emplace_back(*this, path.string());
+			if (img_idx == -1 && image_path == path) {
+				img_idx = images_.size() - 1;
 			}
 		}
 

@@ -2,6 +2,7 @@
 
 #include <bitset>
 #include <vector>
+#include <array>
 #include <cassert>
 #include <limits>
 #include <thread>
@@ -14,6 +15,20 @@
 #include "thread_pool.hpp"
 #include "d2d1_window.h"
 
+using namespace std::string_view_literals;
+
+constexpr std::array<std::string_view, 8> picture_formats =
+{ ".jpg"sv, ".bmp"sv, ".cr2"sv, ".gif"sv, ".png"sv, ".ico"sv, ".webp"sv, ".tif"sv };
+
+
+template <size_t... Size, typename List>
+constexpr bool test_format_impl(std::string_view str, List& lst, std::index_sequence<Size...>) {
+	return ( (str == lst[Size]) || ... );
+}
+
+constexpr bool test_format(std::string_view str) {
+	return test_format_impl(str, picture_formats, std::make_index_sequence<picture_formats.size()>());
+}
 
 using tp = thread_pool_3;
 
@@ -550,15 +565,7 @@ public:
 			if (path.has_extension()) {
 				auto ext = path.extension().string();
 				std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
-				if (ext == ".jpg"
-					|| ext == ".bmp"
-					|| ext == ".cr2"
-					|| ext == ".gif"
-					|| ext == ".png"
-					|| ext == ".ico"
-					|| ext == ".webp") {
-					files.emplace(path);
-				}
+				if (test_format(ext)) files.emplace(path);
 			}
 		}
 		
